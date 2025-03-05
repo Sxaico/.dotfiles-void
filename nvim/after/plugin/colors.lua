@@ -1,0 +1,13 @@
+-- function ColorMyPencils(color)
+-- 	color = color or 'rose-pine'
+-- 	vim.cmd.colorscheme(color)
+-- 
+-- 	-- Para hacerlos transparentes
+-- 	vim.api.nvim_set_hl(0,'Normal', { bg = 'none' })
+-- 	vim.api.nvim_set_hl(0,'NormalFloat', { bg = 'none' })
+-- 
+-- end
+-- 
+-- ColorMyPencils()
+-- vim.cmd[[colorscheme tokyonight]]
+vim.cmd[[colorscheme catppuccin "catppuccin-mocha"]]
