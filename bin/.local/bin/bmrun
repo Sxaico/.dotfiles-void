@@ -1,0 +1,5 @@
+# ~/.local/bin/bmrun
+#!/usr/bin/env bash
+export BEMENU_OPTS='-c -l "8 down" -i --single-instance --accept-single --auto-select --scrollbar autohide --no-overlap -W 0.5 -H 50 -B 1 -R 5 --fn "Hack:size=24" -P ">" --fb "#1e1e2e" --ff "#cdd6f4" --nb "#1e1e2ecc" --nf "#cdd6f4" --tb "#1e1e2e" --tf "#f38ba8" --hb "#f5c2e780" --hf "#f9e2af" --ab "#1e1e2ecc" --af "#cdd6f4" --bdr "#cba6f7"'
+exec bemenu-run "$@"
+

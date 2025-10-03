@@ -1,0 +1,76 @@
+#!/bin/sh
+warn()  { printf '[WARN] %s\n' "$*"; }
+ok()    { printf '[OK] %s\n'   "$*"; }
+info()  { printf '[INFO] %s\n' "$*"; }
+
+# --- Servicios que deben vivir en /var/service ---
+services="dbus seatd polkitd iwd bluetoothd rtkit"
+# Añade cualquier dhcpcd* linkeado
+dhcps=$(ls -1 /var/service 2>/dev/null | grep '^dhcpcd' || true)
+services="$services $dhcps"
+
+for s in $services; do
+  if [ -L "/var/service/$s" ]; then
+    st=$(sv status "$s" 2>/dev/null)
+    printf '%s\n' "$st" | grep -qE '(run|up)' \
+      && ok "service $s running" \
+      || warn "service $s linked but not running (sudo sv up $s)"
+  else
+    warn "service $s NOT linked (sudo ln -s /etc/sv/$s /var/service/)"
+  fi
+done
+
+# --- Entorno Wayland ---
+[ -n "$WAYLAND_DISPLAY" ]     && ok "WAYLAND_DISPLAY=$WAYLAND_DISPLAY" || warn "WAYLAND_DISPLAY no seteado"
+[ -n "$XDG_SESSION_TYPE" ]    && ok "XDG_SESSION_TYPE=$XDG_SESSION_TYPE" || warn "XDG_SESSION_TYPE no seteado"
+[ -n "$XDG_CURRENT_DESKTOP" ] && ok "XDG_CURRENT_DESKTOP=$XDG_CURRENT_DESKTOP" || warn "XDG_CURRENT_DESKTOP no seteado"
+
+# --- PipeWire stack ---
+for p in pipewire wireplumber pipewire-pulse; do
+  pgrep -x "$p" >/dev/null 2>&1 && ok "proc $p" || warn "proc $p no está"
+done
+
+# --- wpctl snapshot (con timeout para no colgarse) ---
+if command -v wpctl >/dev/null 2>&1; then
+  if timeout 3 wpctl status >/dev/null 2>&1; then
+    ok "wpctl responde"
+    timeout 3 wpctl status | sed -n '1,40p'
+  else
+    warn "wpctl sin respuesta (¿dbus/rtkit/pipewire?)"
+  fi
+else
+  warn "wpctl no instalado"
+fi
+
+# --- Bluetooth resumen ---
+if command -v bluetoothctl >/dev/null 2>&1; then
+  if timeout 3 bluetoothctl show >/dev/null 2>&1; then
+    pow=$(bluetoothctl show | awk -F': ' '/Powered:/ {print $2; exit}')
+    [ "$pow" = "yes" ] && ok "bluetooth Powered: yes" || warn "bluetooth Powered: no (bluetoothctl power on)"
+  else
+    warn "bluetoothctl no puede hablar con bluetoothd"
+  fi
+fi
+
+# Reemplaza la comprobación de pipewire-pulse por:
+if ss -x | grep -q '/run/user/'"$(id -u)"'/pulse/native'; then
+  ok "pulse socket presente (/run/user/$(id -u)/pulse/native)"
+else
+  warn "pulse socket ausente"
+fi
+
+# Y para evitar el falso “duplicado”:
+# Cuenta pipewire 'normal' y el que carga pulse.conf como 1+1 (válido)
+PW_MAIN=$(pgrep -x pipewire | wc -l)
+PW_PULSE=$(pgrep -af "pipewire .*pipewire-pulse.conf" | wc -l)
+[ "$PW_MAIN" -ge 1 ] && ok "pipewire OK ($PW_MAIN main)"
+[ "$PW_PULSE" -ge 1 ] && ok "pulse-server OK (pipewire -c pipewire-pulse.conf)"
+
+
+# --- wpctl rápido (timeout) ---
+if timeout 2 wpctl status >/dev/null 2>&1; then
+  ok "wpctl responde"
+else
+  warn "wpctl sin respuesta (revisa sockets stale o dbus de sesión)"
+fi
+

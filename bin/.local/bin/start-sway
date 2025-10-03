@@ -1,0 +1,21 @@
+#!/bin/sh
+# Entorno Wayland/Qt/Gtk:
+export XDG_CURRENT_DESKTOP=sway
+export XDG_SESSION_TYPE=wayland
+export MOZ_ENABLE_WAYLAND=1
+export GDK_BACKEND=wayland,x11
+export QT_QPA_PLATFORM=wayland
+export SDL_VIDEODRIVER=wayland
+export ELM_DISPLAY=wl
+
+# (Opcional, híbrida Intel+NVIDIA: fuerza Intel para wlroots/sway)
+# if [ -e /dev/dri/card0 ]; then export WLR_DRM_DEVICES=/dev/dri/card0; fi
+export XCURSOR_THEME=Breeze_Light
+export XCURSOR_SIZE=24
+export QT_QPA_PLATFORMTHEME=qt6ct   # Qt6
+#export QT_QPA_PLATFORMTHEME=qt5ct   # Qt5 (si usás apps Qt5)
+#export QT_STYLE_OVERRIDE=Breeze
+
+
+# SÍ o SÍ: bus de sesión para audio/BT/portales
+exec dbus-run-session sway

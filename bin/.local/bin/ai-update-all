@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+APPS="$HOME/Applications"
+found=0
+
+for F in "$APPS"/*.AppImage; do
+  [ -e "$F" ] || continue
+  found=1
+  if "$F" --appimage-update; then
+    MSG="Actualizado: $(basename "$F")"
+  else
+    MSG="Sin metadatos de update: $(basename "$F")"
+  fi
+  command -v notify-send >/dev/null 2>&1 && notify-send "AppImage" "$MSG"
+done
+
+if [ $found -eq 0 ]; then
+  command -v notify-send >/dev/null 2>&1 && notify-send "AppImage" "No hay AppImage en $APPS"
+fi
+
