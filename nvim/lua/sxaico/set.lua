@@ -26,10 +26,13 @@ vo.termguicolors = true
 
 vo.scrolloff = 8 -- Para hacer que el scroll sea 8 lineas arriba/abajo
 
-
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = {"markdown" },
+  pattern = { "markdown" },
   callback = function()
-    require("cmp").setup({ enabled = false })
+    local ok, cmp = pcall(require, "cmp")
+    if ok then
+      cmp.setup.buffer({ enabled = false })  -- <— SOLO en este buffer
+    end
   end,
 })
+

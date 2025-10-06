@@ -1,13 +1,10 @@
--- function ColorMyPencils(color)
--- 	color = color or 'rose-pine'
--- 	vim.cmd.colorscheme(color)
--- 
--- 	-- Para hacerlos transparentes
--- 	vim.api.nvim_set_hl(0,'Normal', { bg = 'none' })
--- 	vim.api.nvim_set_hl(0,'NormalFloat', { bg = 'none' })
--- 
--- end
--- 
--- ColorMyPencils()
--- vim.cmd[[colorscheme tokyonight]]
-vim.cmd[[colorscheme catppuccin "catppuccin-mocha"]]
+-- Selección de esquema de colores (simple y robusto)
+local function set_scheme(name, fallback)
+  if not pcall(vim.cmd.colorscheme, name) and fallback then
+    pcall(vim.cmd.colorscheme, fallback)
+  end
+end
+
+-- Usar Catppuccin por defecto (mocha está configurado en catppuccin.lua)
+set_scheme("catppuccin", "tokyonight")
+
