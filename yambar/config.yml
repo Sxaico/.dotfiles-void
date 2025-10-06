@@ -1,14 +1,72 @@
 awesome: &awesome Font Awesome 6 Free:style=solid:pixelsize=14
 awesome_brands: &awesome_brands Font Awesome 6 Brands:pixelsize=16
+std_underline: &std_underline {underline: { size: 2, color: cba6f7ff}}
+#volumeCtl: &volumeCtl {on-click: {left: wpctl set-mute @DEFAULT_SINK@ toggle, wheel-up: wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+, wheel-down: wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-}}
+#volumeCtl: &volumeCtl
+#  on-click:
+#    left: wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+#    wheel-up: wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
+#    wheel-down: wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 
-std_underline: &std_underline {underline: { size: 2, color: ff0000ff}}
+
+# colores
+base: &base 1e1e2eff
+mantle: &mantle 181825ff
+crust: &crust 11111bff
+
+text: &text cdd6f4ff
+subtext0: &subtext0 a6adc8ff
+subtext1: &subtext1 bac2deff
+
+surface0: &surface0 313244ff
+surface1: &surface1 45475aff
+surface2: &surface2 585b70ff
+
+overlay0: &overlay0 6c7086ff
+overlay1: &overlay1 7f849cff
+overlay2: &overlay2 9399b2ff
+
+blue: &blue 89b4faff
+lavender: &lavender b4befeff
+sapphire: &sapphire 74c7ecff
+sky: &sky 89dcebff
+teal: &teal 94e2d5ff
+green: &green a6e3a1ff
+yellow: &yellow f9e2afff
+peach: &peach fab387ff
+maroon: &maroon eba0acff
+red: &red f38ba8ff
+mauve: &mauve cba6f7ff
+pink: &pink f5c2e7ff
+flamingo: &flamingo f2cdcdff
+rosewater: &rosewater f5e0dcff
+transparent: &transparent 00000000
+
+font: &font HackNerdFont:size=14
+icon: &icon "Symbols Nerd Font: size=16"
+iconLg: &iconLg "Symbols Nerd Font: size=20"
+
+margin: &margin {margin: 5}
+marginIcon: &marginIcon {left-margin: 3}
+marginLeftCorner: &marginLeftCorner {left-margin: 11, right-margin: 5}
+marginRightCorner: &marginRightCorner {left-margin: 7, right-margin: 11}
+
+underline_blue: &underline_blue {deco: {underline: {size: 2, color: *blue}}}
+underline_lavender: &underline_lavender {deco: {underline: {size: 2, color: *lavender}}}
+underline_sapphire: &underline_sapphire {deco: {underline: {size: 2, color: *sapphire}}}
+underline_green: &underline_green {deco: {underline: {size: 2, color: *green}}}
+underline_yellow: &underline_yellow {deco: {underline: {size: 2, color: *yellow}}}
+underline_red: &underline_red {deco: {underline: {size: 2, color: *red}}}
+underline_pink: &underline_pink {deco: {underline: {size: 2, color: *pink}}}
+underline_mauve: &underline_mauve {deco: {underline: {size: 2, color: *mauve}}}
+underline_flamingo: &underline_flamingo {deco: {underline: {size: 2, color: *flamingo}}}
 
 bar:
-  height: 26
+  height: 30
   location: top
   #background: 000000ff
-  spacing: 5
-  margin: 5
+  spacing: 3
+  #margin: 5
 
   border:
     #width: 1
@@ -16,35 +74,131 @@ bar:
     top-margin: 2
     bottom-margin: 2
 
-  foreground: ffffffff
-  background: 111111cc
+  foreground: *text
+  #background: 111111cc
+  background: 1e1e2ecc
 
-  font: Adobe Helvetica:pixelsize=12
+  font: *font
+  #font: Adobe Helvetica:pixelsize=12
 
   right:
-
-    - alsa:
-        card: hw:Intel
-        mixer: Master
+    # - network:
+    #     content:
+    #       map:
+    #         default: {empty: {}}
+    #         conditions:
+    #           name == wlp8s0:
+    #             string: {text: "[{ssid}] {state}  {quality}"}
+    - network:
+        poll-interval: 1000
         content:
           map:
+            default: {empty: {}}
             conditions:
-              ~online: {string: {text: , font: *awesome, foreground: ff0000ff}}
-              online:
+              name == wlp8s0:
                 map:
-                  on-click: /bin/sh -c "amixer -q sset Speaker unmute && amixer -q sset Headphone unmute && amixer -q sset Master toggle"
                   conditions:
-                    muted: {string: {text: , font: *awesome, foreground: ffffff66}}
-                    ~muted:
-                      ramp:
-                        tag: percent
+                    ssid == "":
+                      list:
+                        spacing: 0
                         items:
-                          - string: {text: , font: *awesome}
-                          - string: {text: , font: *awesome}
-                          - string: {text: , font: *awesome}
+                          - string: {text: "󰖪", font: *icon, <<: *marginIcon}
+                          #- string: {text: "Disconnected", <<: *margin}
+                  default:
+                    list:
+                      spacing: 0
+                      items:
+                        - string: {text: "", font: *icon, <<: *margin}
+                        #- string: {text: "{ssid}"}
+
+
+
+    #    - network:
+    #       name: wlp8s0
+    #       poll-interval: 1000
+    #       content:
+    #         map:
+    #           default: {string: {text: , font: *awesome, foreground: ffffff66}}
+    #           conditions:
+    #             state == down: {string: {text: , font: *awesome, foreground: ff0000ff}}
+    #             state == up:
+    #               map:
+    #                 default:
+    #                   - string: {text: , font: *awesome}
+    #                   - string: {text: "{ssid} {dl-speed:mb}/{ul-speed:mb} Mb/s"}
+    #
+    #                 conditions:
+    #                   ipv4 == "":
+    #                     - string: {text: , font: *awesome, foreground: ffffff66}
+    #                     - string: {text: "{ssid} {dl-speed:mb}/{ul-speed:mb} Mb/s", foreground: ffffff66}
+
+                #    - alsa:
+                #        card: hw:1
+                #        mixer: PCM
+                #        content:
+                #          map:
+                #            conditions:
+                #              ~online: {string: {text: , font: *awesome, foreground: ff0000ff}}
+                #              online:
+                #                map:
+                #                  on-click: /bin/sh -c "amixer -q sset Speaker unmute && amixer -q sset Headphone unmute && amixer -q sset Master toggle"
+                #                  conditions:
+                #                    muted: {string: {text: , font: *awesome, foreground: ffffff66}}
+                #                    ~muted:
+                #                      ramp:
+                #                        tag: percent
+                #                        items:
+                #                          - string: {text: , font: *awesome}
+                #                          - string: {text: , font: *awesome}
+                #                          - string: {text: , font: *awesome}
+                        # Salida (sink) – muestra sólo el default
+#    - pipewire:
+#        content:
+#          map:
+#            conditions:
+#              type == "sink":
+#                map:
+#                  conditions:
+#                    muted:
+#                      - string: {text: "󰖁", font: *icon, <<: [*volumeCtl, *marginIcon]}
+#                    ~muted:
+#                      list:
+#                        spacing: 0
+#                        <<: *volumeCtl
+#                        items:
+#                          - string: {text: "󰕾", font: *icon, <<: []}
+#                          - string: {text: "{cubic_volume}%", <<: [*margin]}
+#    - pipewire:
+#        content:
+#          map:
+#            conditions:
+#              type == "source":
+#                map:
+#                  conditions:
+#                    muted:
+#                      - string: {text: "󰍭", font: *icon, <<: *marginIcon}   # mic mute
+#                    ~muted:
+#                      - string:
+#                          text: "󰍬"                                       # mic on
+#                          font: *icon
+#                          <<: *marginIcon
+#                          on-click:
+#                            left: wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+#
+    - script:
+        path: /home/sxaico/.local/bin/yambar-volume
+        poll-interval: 500
+        content:
+          string:
+            text: "{text}"
+            on-click:
+              left: wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+              wheel-up: wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
+              wheel-down: wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+
 
     - battery:
-        name: BAT1
+        name: BAT0
         poll-interval: 30000
         anchors:
           discharging: &discharging
@@ -53,16 +207,16 @@ bar:
                 - ramp:
                     tag: capacity
                     items:
-                      - string: {text: , foreground: ff0000ff, font: *awesome}
-                      - string: {text: , foreground: ffa600ff, font: *awesome}
-                      - string: {text: , font: *awesome}
-                      - string: {text: , font: *awesome}
-                      - string: {text: , font: *awesome}
-                      - string: {text: , font: *awesome}
-                      - string: {text: , font: *awesome}
-                      - string: {text: , font: *awesome}
-                      - string: {text: , font: *awesome}
-                      - string: {text: , foreground: 00ff00ff, font: *awesome}
+                      - string: {text: , foreground: ff0000ff, font: *icon}
+                      - string: {text: , foreground: ffa600ff, font: *icon}
+                      - string: {text: , font: *icon}
+                      - string: {text: , font: *icon}
+                      - string: {text: , font: *icon}
+                      - string: {text: , font: *icon}
+                      - string: {text: , font: *icon}
+                      - string: {text: , font: *icon}
+                      - string: {text: , font: *icon}
+                      - string: {text: , foreground: 00ff00ff, font: *icon}
                 - string: {text: "{capacity}%"}
         content:
           map:
@@ -72,53 +226,79 @@ bar:
               state == discharging:
                 <<: *discharging
               state == charging:
-                - string: {text: , foreground: 00ff00ff, font: *awesome}
+                - string: {text: , foreground: 00ff00ff, font: *icon}
                 - string: {text: "{capacity}%"}
               state == full:
-                - string: {text: , foreground: 00ff00ff, font: *awesome}
-                - string: {text: "{capacity}% full"}
+                - string: {text: , foreground: 00ff00ff, font: *icon}
+                - string: {text: "{capacity}%"}
               state == "not charging":
                 - ramp:
                     tag: capacity
                     items:
-                      - string: {text:  , foreground: ff0000ff, font: *awesome}
-                      - string: {text:  , foreground: ffa600ff, font: *awesome}
-                      - string: {text:  , foreground: 00ff00ff, font: *awesome}
-                      - string: {text:  , foreground: 00ff00ff, font: *awesome}
-                      - string: {text:  , foreground: 00ff00ff, font: *awesome}
-                      - string: {text:  , foreground: 00ff00ff, font: *awesome}
-                      - string: {text:  , foreground: 00ff00ff, font: *awesome}
-                      - string: {text:  , foreground: 00ff00ff, font: *awesome}
-                      - string: {text:  , foreground: 00ff00ff, font: *awesome}
-                      - string: {text:  , foreground: 00ff00ff, font: *awesome}
+                      - string: {text:  , foreground: ff0000ff, font: *icon}
+                      - string: {text:  , foreground: ffa600ff, font: *icon}
+                      - string: {text:  , foreground: 00ff00ff, font: *icon}
+                      - string: {text:  , foreground: 00ff00ff, font: *icon}
+                      - string: {text:  , foreground: 00ff00ff, font: *icon}
+                      - string: {text:  , foreground: 00ff00ff, font: *icon}
+                      - string: {text:  , foreground: 00ff00ff, font: *icon}
+                      - string: {text:  , foreground: 00ff00ff, font: *icon}
+                      - string: {text:  , foreground: 00ff00ff, font: *icon}
+                      - string: {text:  , foreground: 00ff00ff, font: *icon}
                 - string: {text: "{capacity}%"}
-
-    - clock:
-        date-format: "%Y-%m-%d"
+    - script:
+        path: /home/sxaico/.local/bin/yambar-kdeconnect
+        poll-interval: 30000        # en milisegundos (30 s)
         content:
-          - string: {text: , font: "Font Awesome 6 Free:style=solid:size=12"}
-          - string: {text: "{date}", right-margin: 5}
-          - string: {text: , font: "Font Awesome 6 Free:style=solid:size=12"}
-          - string: {text: "{time}"}
+          string:
+            text: "{text}"
+            on-click:
+              left: kdeconnect-app
+
+#    - clock:
+#        date-format: "%Y-%m-%d"
+#        content:
+#          - string: {text: , font: *icon, <<: *marginIcon}
+#          - string: {text: "{date}", <<: *margin}
+#          - string: {text: , font: *icon, <<: *marginIcon}
+#          - string: {text: "{time}", <<: *margin}
+    - clock:
+        content:
+          list:
+            items:
+              - string: 
+                  text: " {time}" 
+                  on-click:
+                    left: ~/.local/bin/yambar-cal
+
+
 
     - label:
         content:
           string:
-            on-click: sudo halt
-            text: 
-            font: *awesome
+            on-click: {left: swaymsg exec echo 'toggle visibility' > /tmp/wcp}
+            text:   
+            font: *icon
+            <<: [*marginRightCorner]
+            foreground: *blue
+
   left:
+    - label:
+        content:
+          - string: {text: "", font: *iconLg, foreground: *green, <<: [*marginLeftCorner]}
+          - string: {text: "|", foreground: *overlay0}
+
     - i3:
         anchors: # Not used (directly) by f00bar; used here to avoid duplication
-          - string: &i3_common {margin: 5, on-click: "swaymsg --quiet workspace {name}"}
+          - string: &i3_common {margin: 6, on-click: "swaymsg --quiet workspace {name}"}
           - string: &default {<<: *i3_common, text: "{name}"}
-          - string: &main    {<<: *i3_common, text: , font: *awesome}
-          - string: &surfing {<<: *i3_common, text: , font: *awesome_brands}
-          - string: &misc    {<<: *i3_common, text: , font: *awesome}
-          - string: &mail    {<<: *i3_common, text: , font: *awesome}
-          - string: &music   {<<: *i3_common, text: , font: *awesome}
+          - string: &main    {<<: *i3_common, text: , font: *icon}
+          - string: &surfing {<<: *i3_common, text: , font: *icon}
+          - string: &misc    {<<: *i3_common, text: , font: *icon}
+          - string: &mail    {<<: *i3_common, text: , font: *icon}
+          - string: &music   {<<: *i3_common, text: , font: *icon}
           - focused: &focused
-              deco: {stack: [background: {color: ffa0a04c}, <<: *std_underline]}
+              deco: {stack: [background: {color: b4befe35}, <<: *std_underline]}
           - invisible: &invisible {foreground: ffffff55}
           - urgent: &urgent
               foreground: 000000ff
@@ -184,5 +364,5 @@ bar:
             conditions:
               ~activated: {empty: {}}
               activated:
-                - string: {text: "{app-id}", foreground: ffa0a0ff}
-                - string: {text: ": {title}"}
+                #- string: {text: "{app-id}", foreground: *mauve}
+                - string: {text: "{title}", max: 57, <<: [margin: 10, *underline_mauve]}
