@@ -31,7 +31,7 @@ set $menu bemenu-run
 # Reglas para ventanas flotantes
 for_window [app_id="bemenu"] floating enable, border none
 for_window [app_id="blueman-manager"] floating enable, border none, opacity 1
-for_window [app_id="iwgtk"] floating enable, border none, opacity 0.8
+for_window [app_id="iwgtk"] floating enable, border none, opacity 1
 for_window [window_type="dialog"] floating enable
 for_window [app_id="mpv"] inhibit_idle fullscreen
 for_window [app_id="vlc"] inhibit_idle fullscreen
