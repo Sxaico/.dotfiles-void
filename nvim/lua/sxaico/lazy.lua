@@ -46,9 +46,37 @@ return require("lazy").setup({
 -- UI
 { "nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
 { "lukas-reineke/indent-blankline.nvim", main = "ibl" },
+{ 
+"MeanderingProgrammer/render-markdown.nvim",
+dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' }, -- if you use the mini.nvim suite
+-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' }, -- if you use standalone mini plugins
+-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+---@module 'render-markdown'
+---@type render.md.UserConfig
+opts = {},
+},
 
 -- LaTeX
 { "lervag/vimtex", lazy = false },
+{ 
+  "aserowy/tmux.nvim",
+  config = function()
+    require("tmux").setup({
+      copy_sync = { enable = false }, -- evita tocar registros/clipboard
+      navigation = {
+        enable_default_keybindings = true, -- C-h/j/k/l
+        cycle_navigation = true,
+        persist_zoom = true,
+      },
+      resize = {
+        enable_default_keybindings = true, -- Alt-h/j/k/l
+        resize_step_x = 3,
+        resize_step_y = 2,
+      },
+      swap = { enable_default_keybindings = false },
+    })
+  end
+},
 
 -- Depuración
 { "mfussenegger/nvim-dap", dependencies = { "mfussenegger/nvim-dap-python" } },

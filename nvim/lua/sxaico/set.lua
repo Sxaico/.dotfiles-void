@@ -24,6 +24,8 @@ vo.conceallevel = 1
 
 vo.termguicolors = true
 
+vo.clipboard = "unnamedplus"
+
 vo.scrolloff = 8 -- Para hacer que el scroll sea 8 lineas arriba/abajo
 
 vim.api.nvim_create_autocmd("FileType", {
