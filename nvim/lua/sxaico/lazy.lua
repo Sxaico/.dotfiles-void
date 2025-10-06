@@ -78,6 +78,11 @@ opts = {},
   end
 },
 
+{ "lewis6991/gitsigns.nvim", opts = {} },
+{ "rcarriga/nvim-notify", opts = { stages = "fade", timeout = 2500 } },
+
+
+
 -- Depuración
 { "mfussenegger/nvim-dap", dependencies = { "mfussenegger/nvim-dap-python" } },
 
