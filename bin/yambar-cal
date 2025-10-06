@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+# Nombres en español sin depender de locales del sistema
+dias=(Lunes Martes Miércoles Jueves Viernes Sábado Domingo)
+meses=("" Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre)
+
+d=$(date +%d)
+dow=$(( $(date +%u) - 1 ))        # 0..6 (Lunes=0)
+mi=$(( 10#$(date +%m) ))          # 1..12
+y=$(date +%Y)
+
+titulo=" ${dias[$dow]} $d de ${meses[$mi]} $y"
+# Cabecera española + grilla de cal (sólo números; ignora cabeceras de cal)
+grid="$(cal -m | tail -n +3)"
+cuerpo=$'Lu Ma Mi Ju Vi Sá Do\n'"$grid"
+
+notify-send -a "Calendario" -t 5000 "$titulo" "$cuerpo"
+

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# 1) Lista sólo ID y NOMBRE de cada dispositivo emparejado
+mapfile -t lines < <(kdeconnect-cli --list-devices --id-name-only 2>/dev/null)
+
+# 2) Si no hay ninguno, salimos mostrando “no device”
+if [ ${#lines[@]} -eq 0 ]; then
+  echo "text|string| No device"
+  echo ""
+  exit
+fi
+
+# 3) Tomamos el primero: "ID NOMBRE..."
+first="${lines[0]}"
+name="${first#* }"   # descartamos el ID, nos quedamos solo con el nombre
+
+# 4) Emitimos sólo icono “check” + nombre
+echo "text|string| $name"
+echo ""
+

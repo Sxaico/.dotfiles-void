@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -u
+
+v="$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null || true)"
+vol="$(awk '{print $2}' <<<"$v" 2>/dev/null || echo 0)"
+muted=0; grep -q '\[MUTED\]' <<<"$v" && muted=1
+pct="$(awk -v r="${vol:-0}" 'BEGIN{ if(r<0)r=0; if(r>1)r=1; printf "%.0f\n", r*100 }')"
+
+if [ "$muted" = 1 ]; then
+  echo "text|string|󰖁 ${pct}%"
+  echo ""
+else
+  echo "text|string|󰕾 ${pct}%"
+  echo ""
+fi
+
+
